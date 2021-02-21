@@ -21,12 +21,39 @@ function init() {
         },
         updateSnake: function() {
             this.cells.pop()
-            var newHeadX = this.cells[0].x + 1
-            var newHeadY = this.cells[0].y
-            this.cells.unshift({ x: newHeadX, y: newHeadY })
+            var headX = this.cells[0].x
+            var headY = this.cells[0].y
+            var nextX, nextY
+            if (this.direction == "right") {
+                nextX = headX + 1
+                nextY = headY
+            } else if (this.direction == "left") {
+                nextX = headX - 1
+                nextY = headY
+            } else if (this.direction == "down") {
+                nextX = headX
+                nextY = headY + 1
+            } else {
+                nextX = headX
+                nextY = headY - 1
+            }
+            this.cells.unshift({ x: nextX, y: nextY })
         }
     }
     snake.createSnake()
+        // Add an event listener on document object
+    function keydownFunction(e) {
+        if (e.key == "ArrowRight") {
+            snake.direction = "right"
+        } else if (e.key == "ArrowDown") {
+            snake.direction = "down"
+        } else if (e.key == "ArrowLeft") {
+            snake.direction = "left"
+        } else {
+            snake.direction = "up"
+        }
+    }
+    document.addEventListener('keydown', keydownFunction);
 }
 
 function draw() {
