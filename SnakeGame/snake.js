@@ -1,8 +1,9 @@
 function init() {
     var canvas = document.getElementById('mycanvas');
-    W = H = canvas.width = canvas.height = 1000
+    W = H = canvas.width = canvas.height = 800
     pen = canvas.getContext('2d')
     cs = 67
+    food = getRandomFood()
     snake = {
         init_len: 5,
         color: "blue",
@@ -20,7 +21,11 @@ function init() {
             }
         },
         updateSnake: function() {
-            this.cells.pop()
+            if (this.cells[0].x == food.x && this.cells[0].y == food.y) {
+                food = getRandomFood()
+            } else {
+                this.cells.pop()
+            }
             var headX = this.cells[0].x
             var headY = this.cells[0].y
             var nextX, nextY
@@ -56,8 +61,21 @@ function init() {
     document.addEventListener('keydown', keydownFunction);
 }
 
+function getRandomFood() {
+    var foodX = Math.round((Math.random() * (W - cs) / cs))
+    var foodY = Math.round((Math.random() * (H - cs) / cs))
+    var food = {
+        x: foodX,
+        y: foodY,
+        color: "red"
+    }
+    return food
+}
+
 function draw() {
     pen.clearRect(0, 0, W, H)
+    pen.fillStyle = food.color
+    pen.fillRect(food.x * cs, food.y * cs, cs - 2, cs - 2)
     snake.drawSnake()
 }
 
