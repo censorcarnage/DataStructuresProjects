@@ -4,6 +4,10 @@ function init() {
     pen = canvas.getContext('2d')
     cs = 67
     food = getRandomFood()
+    game_over = false
+    food_img = new Image()
+    food_img.src = "assets/apple.png"
+    score = 0
     snake = {
         init_len: 5,
         color: "blue",
@@ -23,6 +27,7 @@ function init() {
         updateSnake: function() {
             if (this.cells[0].x == food.x && this.cells[0].y == food.y) {
                 food = getRandomFood()
+                score++
             } else {
                 this.cells.pop()
             }
@@ -43,6 +48,11 @@ function init() {
                 nextY = headY - 1
             }
             this.cells.unshift({ x: nextX, y: nextY })
+            var last_x = Math.round(W / cs)
+            var last_y = Math.round(H / cs)
+            if (this.cells[0].x < 0 || this.cells[0].y < 0 || this.cells[0].x > last_x || this.cells[0].y > last_y) {
+                game_over = true
+            }
         }
     }
     snake.createSnake()
@@ -74,9 +84,12 @@ function getRandomFood() {
 
 function draw() {
     pen.clearRect(0, 0, W, H)
-    pen.fillStyle = food.color
-    pen.fillRect(food.x * cs, food.y * cs, cs - 2, cs - 2)
     snake.drawSnake()
+    pen.fillStyle = food.color
+    pen.drawImage(food_img, food.x * cs, food.y * cs, cs - 2, cs - 2)
+    pen.fillStyle = "red"
+    pen.font = "40px Roboto"
+    pen.fillText(score, 50, 50)
 }
 
 function update() {
@@ -84,6 +97,10 @@ function update() {
 }
 
 function gameloop() {
+    if (game_over == true) {
+        clearInterval(f)
+        alert("Game Over")
+    }
     draw()
     update()
 }
